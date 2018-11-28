@@ -1,7 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const passport = require('passport');
+
+
 const config = require('./db');
+const user = require('./routes/user');
 
 mongoose.connect(config.DB, { useNewUrlParser: true }).then(
     () => {
@@ -13,8 +17,14 @@ mongoose.connect(config.DB, { useNewUrlParser: true }).then(
 )
 
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(passport.initialize());
+require('./passport')(passport);
+
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use('/api/user', user);
+
 
 app.get('/', (req, res) => {
     res.send('hello');
