@@ -27,7 +27,7 @@ app.use('/api/user', user);
 
 
 app.get('/', (req, res) => {
-    res.send('hello');
+    res.send('hello Doan Hoai Son');
 });
 
 const PORT = process.env.PORT || 5000;

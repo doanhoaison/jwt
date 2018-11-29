@@ -11,10 +11,11 @@ var validateLoginInput = require('../validation/login');
 const User = require('../models/User');
 
 router.post('/register', (req, res) => {
-    console.log('register');
     console.log(req.body);
     const { errors, isValid } = validateRegisterInput(req.body);
+    console.log(errors);
     if(!isValid) {
+        console.log(errors);
         return res.status(400).json(errors);
     } else {
         const avatar = gravatar.url(req.body.email, {
@@ -32,7 +33,8 @@ router.post('/register', (req, res) => {
             email: req.body.email
         }).then(user => {
             if(user){
-                return res.status(400).json({email: 'Email already exist'});
+                errors.email = 'Email is already existed';
+                return res.status(400).json(errors);
             } else {
                 bcrypt.genSalt(10, (error, hash) => {
                     if(error){
@@ -77,6 +79,7 @@ router.post('/login', (req, res) => {
                                 if(err) console.log(err);
                                 else {
                                     console.log(token);
+                                    console.log('login');
                                     res.json({
                                         success: true,
                                         token: `Bearer ${token}`
