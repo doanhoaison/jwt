@@ -1,5 +1,7 @@
 import axio from 'axios';
+
 import { GET_ERRORS } from './types';
+
 export const registerUser = (user, history ) => dispatch =>{
     console.log('register action');
     axio.post('/api/user/register', user)
