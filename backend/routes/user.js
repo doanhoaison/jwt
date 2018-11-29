@@ -24,11 +24,12 @@ router.post('/register', (req, res) => {
             d: 'mm'
         });
         var newUser = new User({
-            name: req.body.name,
-            email: req.body.email,
-            password: req.body.password,
-            avatar
-        })
+          name: req.body.name,
+          email: req.body.email,
+          password: req.body.password,
+          avatar
+        });
+
         User.findOne({
             email: req.body.email
         }).then(user => {
