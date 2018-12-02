@@ -11,9 +11,7 @@ var validateLoginInput = require('../validation/login');
 const User = require('../models/User');
 
 router.post('/register', (req, res) => {
-    console.log(req.body);
     const { errors, isValid } = validateRegisterInput(req.body);
-    console.log(errors);
     if(!isValid) {
         console.log(errors);
         return res.status(400).json(errors);
@@ -63,30 +61,33 @@ router.post('/login', (req, res) => {
         }).then((user) => {
             if(!user){
                 errors.email = 'Email not found'
-                return res.json(errors);
-               
+                return res.status(400).json(errors);
             } else {
+                console.log(user);
                 bcrypt.compare(req.body.password, user.password)
                     .then(isMatch => {
                         if(isMatch) {
                             const payload = {
                                 id: user.id,
                                 name: user.name,
-                                password: user.password
+                                avatar: user.avatar
                             }
                             jwt.sign(payload, 'secret', {
                                 expiresIn: 3600
                             }, (err, token) => {
                                 if(err) console.log(err);
                                 else {
-                                    console.log(token);
-                                    console.log('login');
-                                    res.json({
+                                console.log(token);
+
+                                    res.status(200).json({
                                         success: true,
                                         token: `Bearer ${token}`
                                     })
                                 }
                             })
+                        } else {
+                            errors.password = 'Incorrect Password';
+                            return res.status(400).json(errors);
                         }
                     })
             }
@@ -94,4 +95,11 @@ router.post('/login', (req, res) => {
     }
 })
 
+router.get('/me', passport.authenticate('jwt', { session: false }), (req, res) => {
+    return res.json({
+        id: req.user.id,
+        name: req.user.name,
+        email: req.user.email
+    })
+})
 module.exports = router;

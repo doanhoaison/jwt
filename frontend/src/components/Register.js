@@ -22,8 +22,7 @@ class Register extends Component {
 
     handleInputChange(e) {
         this.setState({
-            [e.target.name]: e.target.value
-        })
+            [e.target.name]: e.target.value        })
     }
 
     handleSubmit(e) {
@@ -38,9 +37,27 @@ class Register extends Component {
         this.props.registerUser(user, this.props.history);
     }
 
+    componentWillReceiveProps(nextProps) {
+        console.log('cwrp');
+        if(nextProps.errors){
+            this.setState({
+                errors: nextProps.errors
+            })
+        }
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        console.log('gdsfp');
+        if(nextProps.errors !== prevState.errors){
+            return { 
+                errors: nextProps.errors 
+            };
+        }
+        return null;
+    }
     render() {
-        const errors = this.props.errors;
-        console.log(errors);
+        console.log('render register');
+        const { errors } = this.state;
         return(
         <div className="container" style={{ marginTop: '50px', width: '700px'}}>
             <h2 style={{marginBottom: '40px'}}>Registration</h2>

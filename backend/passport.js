@@ -9,6 +9,7 @@ opts.secretOrKey = 'secret';
 
 module.exports = passport => {
     passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
+        console.log(`Passport ${jwt_payload}`);
         User.findById(jwt_payload.id)
             .then(user => {
                 if(user) {
@@ -16,6 +17,6 @@ module.exports = passport => {
                 }
                 return done(null, false);
             })
-            .catch(err => console.error(err));
-    }));
+            .catch(error => console.log(error))
+    }))
 }
